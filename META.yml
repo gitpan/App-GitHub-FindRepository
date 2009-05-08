@@ -1,5 +1,5 @@
 ---
-abstract: ~
+abstract: 'Determine the right case (mixed or lower) for a GitHub repository'
 author:
   - 'Robert Krimen <rkrimen@cpan.org>'
 build_requires:
@@ -24,4 +24,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/robertkrimen/App-GitHub-FindRepository/tree/master
-version: 0.01
+version: 0.02
