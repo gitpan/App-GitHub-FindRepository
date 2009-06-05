@@ -3,7 +3,7 @@ NAME
     repository
 
 VERSION
-    Version 0.05
+    Version 0.06
 
 SYNOPSIS
         github-find-repository git://github.com/robertkrimen/Doc-Simply.git
@@ -52,46 +52,111 @@ CAVEAT
     will NOT see it
 
 INSTALL
+    You can install App::GitHub::FindRepository by using CPAN:
+
         cpan -i App::GitHub::FindRepository
 
-    You can also try using the bash script below if you need a quick-fix
+    If that doesn't work properly, you can find help at:
+
+        http://sial.org/howto/perl/life-with-cpan/
+        http://sial.org/howto/perl/life-with-cpan/macosx/ # Help on Mac OS X
+        http://sial.org/howto/perl/life-with-cpan/non-root/ # Help with a non-root account
+
+CONTRIBUTE
+    You can contribute or fork this project via GitHub:
+
+    <http://github.com/robertkrimen/App-GitHub-FindRepository/tree/master>
+
+        git clone git://github.com/robertkrimen/App-GitHub-FindRepository.git
 
 USAGE
   github-find-repository
     A commandline application that will print out the the repository with
     the right casing
 
-        Usage: github-find-repository [--pinger <pinger>] [--getter <getter>] ... <repository>
+        Usage: github-find-repository [...] <repository>
 
-            --pinger        The pinger to use (default is either git-ls-remote or git-peek-remote)
+            --pinger <pinger>   The pinger to use (default is either git-ls-remote or git-peek-remote)
 
-            --getter        The getter to use (default is LWP then curl)
+            --getter <getter>   The getter to use (default is LWP then curl)
 
-            --git-protocol  Don't try to determine the repository by sniffing HTML, just use git://
-                            NOTE: This mode will only check the given casing then lowercase
+            --git-protocol      Don't try to determine the repository by sniffing HTML, just use git://
+                                NOTE: This mode will only check the given casing then lowercase
 
-            <repository>    The repository to test, can be like:
+            --output <output>   One of (case insensitive):
 
-                            git://github.com/robertkrimen/App-GitHub-FindRepository.git
-                            robertkrimen/App-GitHub-FindRepository.git
-                            robertkrimen,App-GitHub-FindRepository
+                                Given "http://github.com/robertkrimen/aPp-giTHub-findRepoSitory.git"
+
+                                URL      http://github.com/robertkrimen/App-GitHub-FindRepository.git
+                                public   git://github.com/robertkrimen/App-GitHub-FindRepository.git
+                                private  git@github.com:robertkrimen/App-GitHub-FindRepository.git
+                                base     robertkrimen/App-GitHub-FindRepository
+                                name     App-GitHub-FindRepository
+                                home     http://github.com/robertkrimen/App-GitHub-FindRepository
+
+            --help, -h, -?      This help
+
+            <repository>        The repository to test, can be like:
+
+                                git://github.com/robertkrimen/App-GitHub-FindRepository.git
+                                robertkrimen/App-GitHub-FindRepository.git
+                                robertkrimen,App-GitHub-FindRepository
 
         For example:
 
             github-find-repository --getter curl robertkrimen,aPp-giTHuB-findRepOsitory
 
-  $repository = AppGitHub::FindRepository->find( <repository> [, pinger => <pinger>, getter => <getter>] )
+  $repository = AppGitHub::FindRepository->find( <repository> [, ...] )
     Given a mixed-case repository URI, it will return the version with the
     right case
 
-  $repository = AppGitHub::FindRepository->find_by_git( <repository> [, pinger => <pinger>] )
+        getter  The method to use to access the repository home page (HTML)
+        pinger  The pinger to use to access the repository via the git protocol
+
+  $repository = AppGitHub::FindRepository->find_by_git( <repository> [, ...] )
+        pinger  The pinger to use to access the repository via the git protocol
+
     Given a mixed-case repository URI, it will return the version with the
     right case, but only using the git protocol
 
     NOTE: This method will only check the given casing then lowercase. See
     CAVEAT
 
-  A bash function as an alternative
+::Repository
+    The repository object that "->find" and "->find_by_git" return
+
+    The object will stringify via the "->url" method
+
+  $repository->url
+    The URL (URI) of the repository (depends on what the object was
+    instantiated with)
+
+  $repository->public
+    The public github clone URL:
+
+        git://github.com/<base>.git
+
+  $repository->private
+    The private github clone URL:
+
+        git@github.com:<base>.git
+
+  $repository->base
+    The user/project part of the repository path (WITHOUT the .git suffix):
+
+        robertkrimen/App-GitHub-FindRepository
+
+  $repository->name
+    The name of the project:
+
+        App-GitHub-FindRepository
+
+  $repository->home
+    The home page of the project on GitHub:
+
+        http://github.com/<base> # Will redirect to .../tree/master
+
+A bash function as an alternative
     If you do not want to install App::GitHub::FindRepository, here is a
     bash equivalent (using the git protocol, see CAVEAT):
 
@@ -109,6 +174,9 @@ USAGE
         }
 
         github-find-repository $*
+
+SEE ALSO
+    App::GitHub::FixRepositoryName
 
 AUTHOR
     Robert Krimen, "<rkrimen at cpan.org>"
